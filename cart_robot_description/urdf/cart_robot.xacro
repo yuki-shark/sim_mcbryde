@@ -11,7 +11,7 @@
   <xacro:property name="axel_offset" value="0.05" /> <!-- Space btw top of beam and the each joint -->
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <!-- <xacro:include filename="$(find cart_robot_description)/urdf/cart_robot.gazebo" /> -->
+  <xacro:include filename="$(find cart_robot_description)/urdf/cart_robot.gazebo" />
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find cart_robot_description)/urdf/config.xacro" />
 
