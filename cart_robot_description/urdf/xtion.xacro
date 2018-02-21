@@ -4,8 +4,8 @@
   <xacro:macro name="xtion" params="xyz rpy parent id">
 
     <!-- import gazebo definitions -->
-    <!-- <xacro:include filename="$(find cart_robot_description)/urdf/xtion.gazebo" /> -->
-    <!-- <xacro:imu_gazebo/> -->
+    <xacro:include filename="$(find cart_robot_description)/urdf/xtion.gazebo" />
+    <xacro:xtion_gazebo id="${id}"/>
 
     <joint name="camera${id}_joint" type="fixed">
       <axis xyz="0 0 1" />
