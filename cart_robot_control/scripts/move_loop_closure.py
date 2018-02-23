@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # license removed for brevity
 import rospy
+from std_msgs.msg import Float64
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose2D
 import tf.transformations
 import math
 
-controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+joint_controller = rospy.Publisher('/cart_robot/joint1_position_controller/command', Float64, queue_size=10)
 
 # Parameters
 linear_speed = 1.5
@@ -89,14 +91,29 @@ def callback(data):
     else:
         rospy.logwarn("Cart robot is out of the path!")
 
-    controller.publish(msg)
+    cart_controller.publish(msg)
+    joint_controller.publish(0)
     rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
+
+def stop_command():
+    global msg
+    msg = Twist()
+    msg.linear.x = 0.0
+    msg.linear.y = 0.0
+    msg.linear.z = 0.0
+    msg.angular.x = 0.0
+    msg.angular.y = 0.0
+    msg.angular.z = 0.0
+    cart_controller.publish(msg)
+    joint_controller.publish(0)
+    rospy.loginfo("running finished")
 
 def auto_move_publisher():
     global msg
     msg = Twist()
     rospy.init_node('auto_move_publisher', anonymous=True)
     rospy.Subscriber("/odom", Odometry, callback)
+    rospy.on_shutdown(stop_command)
     rospy.spin()
 
 if __name__ == '__main__':
