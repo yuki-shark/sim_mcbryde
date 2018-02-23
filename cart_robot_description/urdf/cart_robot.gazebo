@@ -9,6 +9,17 @@
     </plugin>
   </gazebo>
 
+  <!-- Planar move plugin -->
+  <gazebo>
+    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>cart_link</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
   <!-- Links -->
   <gazebo reference="cart_link">
     <material>Gazebo/Red</material>
