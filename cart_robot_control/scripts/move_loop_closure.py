@@ -12,15 +12,28 @@ cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 joint_controller = rospy.Publisher('/cart_robot/joint1_position_controller/command', Float64, queue_size=10)
 
 # Parameters
-linear_speed = 1.5
+linear_speed = 0.5
 angular_speed = -0.2
 
-point1 = Pose2D(-7.5, 8.5, math.pi/2)
-point2 = Pose2D(6.0, 8.5, 0.0)
-point3 = Pose2D(6.0, -7.2, -math.pi/2)
-point4 = Pose2D(-7.5, -7.2, -math.pi)
+#mcbryde1
+# point1 = Pose2D(-7.5, 8.5, math.pi/2)
+# point2 = Pose2D(6.0, 8.5, 0.0)
+# point3 = Pose2D(6.0, -7.2, -math.pi/2)
+# point4 = Pose2D(-7.5, -7.2, -math.pi)
 
-position_margin = 0.2
+#mcbryde3
+# point1 = Pose2D(-7.3, 7.3, math.pi/2)
+# point2 = Pose2D(5.5, 7.3, 0.0)
+# point3 = Pose2D(5.5, -7.7, -math.pi/2)
+# point4 = Pose2D(-7.3, -7.7, -math.pi)
+
+#mcbryde4
+point1 = Pose2D(-7.7, 6.5, math.pi/2)
+point2 = Pose2D(5.0, 6.5, 0.0)
+point3 = Pose2D(5.0, -8.0, -math.pi/2)
+point4 = Pose2D(-7.7, -8.0, -math.pi)
+
+position_margin = 0.1
 angular_margin = 0.01
 
 def callback(data):
@@ -50,50 +63,50 @@ def callback(data):
 
     if x > (point1.x - position_margin) and x < (point1.x + position_margin) and \
        yaw > (point1.theta - angular_margin) and yaw < (point1.theta + angular_margin) and \
-       y < point1.y:
+       y <= point1.y:
         msg.linear.x = linear_speed
-        rospy.loginfo("state 0")
+        # rospy.loginfo("state 0")
     elif x > (point1.x - position_margin) and x < (point1.x + position_margin) and \
          y > (point1.y - position_margin) and y < (point1.y + position_margin) and \
-         yaw > point2.theta:
+         yaw >= point2.theta:
         msg.angular.z = angular_speed
-        rospy.loginfo("state 1")
+        # rospy.loginfo("state 1")
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          yaw > (point2.theta - angular_margin) and yaw < (point2.theta + angular_margin) and \
-         x < point2.x:
+         x <= point2.x:
         msg.linear.x = linear_speed
-        rospy.loginfo("state 2")
+        # rospy.loginfo("state 2")
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          x > (point2.x - position_margin) and x < (point2.x + position_margin) and \
-         yaw > point3.theta:
+         yaw >= point3.theta:
         msg.angular.z = angular_speed
-        rospy.loginfo("state 3")
+        # rospy.loginfo("state 3")
     elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
          yaw > (point3.theta - angular_margin) and yaw < (point3.theta + angular_margin) and \
-         y > point3.y:
+         y >= point3.y:
         msg.linear.x = linear_speed
-        rospy.loginfo("state 4")
+        # rospy.loginfo("state 4")
     elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
          y > (point3.y - position_margin) and y < (point3.y + position_margin) and \
-         yaw > (point4.theta + angular_margin):
+         yaw >= (point4.theta + angular_margin):
         msg.angular.z = angular_speed
-        rospy.loginfo("state 5")
+        # rospy.loginfo("state 5")
     elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
          (yaw > -point4.theta - angular_margin  or yaw < point4.theta + angular_margin) and \
-         x > point4.x:
+         x >= point4.x:
         msg.linear.x = linear_speed
-        rospy.loginfo("state 6")
+        # rospy.loginfo("state 6")
     elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
          x > (point4.x - position_margin) and x < (point4.x + position_margin) and \
          (yaw < (point4.theta + angular_margin) or yaw > point1.theta):
         msg.angular.z = angular_speed
-        rospy.loginfo("state 7")
+        # rospy.loginfo("state 7")
     else:
         rospy.logwarn("Cart robot is out of the path!")
 
     cart_controller.publish(msg)
     joint_controller.publish(0)
-    rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
+    # rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
 
 def stop_command():
     global msg
@@ -111,6 +124,7 @@ def stop_command():
 def auto_move_publisher():
     global msg
     msg = Twist()
+    rospy.loginfo("Cart robot started moving")
     rospy.init_node('auto_move_publisher', anonymous=True)
     rospy.Subscriber("/odom", Odometry, callback)
     rospy.on_shutdown(stop_command)
