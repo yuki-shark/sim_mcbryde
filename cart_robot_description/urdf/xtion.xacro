@@ -1,28 +1,30 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="xtion">
 
-  <xacro:macro name="xtion" params="xyz rpy parent id">
+  <xacro:macro name="xtion" params="xyz rpy parent id link_xyz">
 
     <!-- import gazebo definitions -->
     <xacro:include filename="$(find cart_robot_description)/urdf/xtion.gazebo" />
     <xacro:xtion_gazebo id="${id}"/>
 
-    <joint name="camera${id}_joint" type="fixed">
+    <joint name="camera${id}_joint" type="revolute">
       <axis xyz="0 0 1" />
       <origin xyz="${xyz}" rpy="${rpy}"/>
       <parent link="${parent}"/>
       <child link="camera${id}_link"/>
+      <limit effort="8.0" lower="${-M_PI * 1/2}" upper="${M_PI * 1/2}" velocity="0.45"/>
+    <dynamics damping="0.7"/>
     </joint>
 
     <link name="camera${id}_link">
       <collision>
-        <origin xyz="-0.01 0.0 0.0" rpy="0 0 0" />
+        <origin xyz="${link_xyz}" rpy="0 0 0" />
         <geometry>
           <box size="0.04 0.18 0.03"/>
         </geometry>
       </collision>
       <visual>
-        <origin xyz="0 0 0" rpy="${M_PI/2.0} 0 ${M_PI/2.0}" />
+        <origin xyz="${link_xyz}" rpy="${M_PI/2.0} 0 ${M_PI/2.0}" />
         <geometry>
           <mesh filename="package://cart_robot_description/mesh/asus_xtion_pro_live.dae" scale="0.001 0.001 0.001"/>
         </geometry>
@@ -34,6 +36,17 @@
                  iyy="0.001" iyz="0.0" izz="0.001" />
       </inertial>
     </link>
+
+    <transmission name="camera_tran${id}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="camera${id}_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="camera_motor${id}">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
 
   </xacro:macro>
 
