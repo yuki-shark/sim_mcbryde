@@ -14,20 +14,22 @@
   <include file="$(find cart_robot_control)/launch/cart_robot_control.launch"/>
 
   <!-- tf publisher -->
-  <node pkg="tf" type="static_transform_publisher" name="optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame 100" />
 
   <!-- include rtabmap.launch -->
-  <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
-    <arg name="rgb_topic" value="/camera1/rgb/image_raw"/>
-    <arg name="depth_topic" value="/camera1/depth_registered/image_raw" />
-    <arg name="camera_info_topic" value="/camera1/rgb/camera_info" />
-    <arg name="frame_id" value="/camera1_link"/>
-    <arg name="database_path" value="$(find making_map)/map_db/map$(arg db_id).db"/>
-    <!-- <arg name="database_path" value="$(find making_map)/map_db/date +'%d-%m-%Y_%Ih%Mm%S' + .db"/> -->
-  </include>
+  <!-- <include file="$(find rtabmap_ros)/launch/rtabmap.launch"> -->
+  <!--   <arg name="rgb_topic" value="/camera1/rgb/image_raw"/> -->
+  <!--   <arg name="depth_topic" value="/camera1/depth_registered/image_raw" /> -->
+  <!--   <arg name="camera_info_topic" value="/camera1/rgb/camera_info" /> -->
+  <!--   <arg name="frame_id" value="/camera1_link"/> -->
+  <!--   <arg name="database_path" value="$(find making_map)/map_db/map$(arg db_id).db"/> -->
+  <!-- </include> -->
 
   <!-- Run a python script -->
-  <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen"/>
+  <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen">
+    <param name="camera_angle" value="0.78539"/>
+  </node>
 
   <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen">
     <param name="add_shake" value="$(arg add_shake)"/>

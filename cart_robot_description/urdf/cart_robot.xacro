@@ -129,6 +129,9 @@
   </transmission>
 
   <!-- camera1 -->
-  <xacro:xtion xyz="0.0074361 0 ${0.01875 + height3 - axel_offset}" rpy="0 0 0" parent="camera_mount_link" id="1" />
+  <xacro:xtion xyz="0.0074361 0.015 ${0.01875 + height3 - axel_offset}" rpy="0 0 0" parent="camera_mount_link" id="1" link_xyz="0.01 0.097 0.0"/>
+
+  <!-- camera2 -->
+  <xacro:xtion xyz="0.0074361 -0.015 ${0.01875 + height3 - axel_offset}" rpy="0 0 0" parent="camera_mount_link" id="2" link_xyz="0.01 -0.103 0.0"/>
 
 </robot>

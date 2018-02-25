@@ -9,7 +9,12 @@
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
 	output="screen" ns="/cart_robot" args="joint_state_controller
-					  joint1_position_controller"/>
+					       joint1_position_controller
+                                               camera1_joint_position_controller
+                                               camera2_joint_position_controller">
+    <!-- <remap from="/camera1_joint" to="/cart_robot/camera1_joint"/> -->
+    <!-- <remap from="/camera2_joint" to="/cart_robot/camera2_joint"/> -->
+  </node>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
