@@ -11,7 +11,8 @@
 	output="screen" ns="/cart_robot" args="joint_state_controller
 					       joint1_position_controller
                                                camera1_joint_position_controller
-                                               camera2_joint_position_controller">
+                                               camera2_joint_position_controller
+                                               camera3_joint_position_controller">
     <!-- <remap from="/camera1_joint" to="/cart_robot/camera1_joint"/> -->
     <!-- <remap from="/camera2_joint" to="/cart_robot/camera2_joint"/> -->
   </node>

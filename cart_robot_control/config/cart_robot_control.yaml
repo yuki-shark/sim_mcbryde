@@ -19,3 +19,8 @@ cart_robot:
     type: effort_controllers/JointPositionController
     joint: camera2_joint
     pid: {p: 1000.0, i: 0.01, d: 10.0}
+
+  camera3_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: camera3_joint
+    pid: {p: 1000.0, i: 0.01, d: 10.0}
