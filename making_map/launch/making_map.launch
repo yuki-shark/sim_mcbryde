@@ -7,28 +7,25 @@
   <!-- <arg name="gui" default="true"/> -->
   <!-- <arg name="headless" default="false"/> -->
   <!-- <arg name="debug" default="false"/> -->
-
+  <arg name="camera_angle" default="45"/>
   <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
 
   <!-- ros_control cart_robot launch file -->
   <include file="$(find cart_robot_control)/launch/cart_robot_control.launch"/>
 
   <!-- tf publisher -->
-  <node pkg="tf" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
-  <node pkg="tf" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame 100" />
 
-  <!-- include rtabmap.launch -->
-  <!-- <include file="$(find rtabmap_ros)/launch/rtabmap.launch"> -->
-  <!--   <arg name="rgb_topic" value="/camera1/rgb/image_raw"/> -->
-  <!--   <arg name="depth_topic" value="/camera1/depth_registered/image_raw" /> -->
-  <!--   <arg name="camera_info_topic" value="/camera1/rgb/camera_info" /> -->
-  <!--   <arg name="frame_id" value="/camera1_link"/> -->
-  <!--   <arg name="database_path" value="$(find making_map)/map_db/map$(arg db_id).db"/> -->
-  <!-- </include> -->
+  <!-- include two_camera_rtabmap.launch -->
+  <include file="$(find making_map)/launch/two_camera_rtabmap.launch">
+    <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map$(arg db_id).db"/>
+  </include>
 
   <!-- Run a python script -->
   <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen">
-    <param name="camera_angle" value="0.78539"/>
+    <param name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
   </node>
 
   <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen">
