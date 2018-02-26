@@ -1,7 +1,7 @@
 <launch>
 
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
-  <!-- <arg name="db_id" default="1"/> -->
+  <arg name="db_id" default="1"/>
   <!-- <arg name="use_sim_time" default="true"/> -->
   <!-- <arg name="gui" default="true"/> -->
   <!-- <arg name="headless" default="false"/> -->
@@ -29,4 +29,3 @@
   <node pkg="cart_robot_control" name="move_loop_closure.py" type="move_loop_closure.py" output="screen"/>
 
 </launch>
-
