@@ -2,6 +2,7 @@
 
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="db_id" default="1"/>
+  <arg name="add_shake" default="false"/>
   <!-- <arg name="use_sim_time" default="true"/> -->
   <!-- <arg name="gui" default="true"/> -->
   <!-- <arg name="headless" default="false"/> -->
@@ -26,6 +27,10 @@
   </include>
 
   <!-- Run a python script -->
-  <node pkg="cart_robot_control" name="move_loop_closure.py" type="move_loop_closure.py" output="screen"/>
+  <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen"/>
+
+  <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen">
+    <param name="add_shake" value="$(arg add_shake)"/>
+  </node>
 
 </launch>
