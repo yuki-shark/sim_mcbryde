@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!-- Revolute-Revolute Manipulator -->
+<robot name="cart_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <!-- <xacro:property name="PI" value="3.1415926535897931"/> -->
+  <xacro:property name="mass" value="500" /> <!-- arbitrary value for mass -->
+  <xacro:property name="horizontal" value="1" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="vertical" value="0.5" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="width" value="0.1" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="height1" value="0.2" /> <!-- Link 1 -->
+  <xacro:property name="height2" value="0.4" /> <!-- Link 2 -->
+  <xacro:property name="height3" value="0.5" /> <!-- Link 3 -->
+  <xacro:property name="axel_offset" value="0.05" /> <!-- Space btw top of beam and the each joint -->
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find cart_robot_description)/urdf/cart_robot.gazebo" />
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find cart_robot_description)/urdf/config.xacro" />
+
+  <xacro:include filename="$(find cart_robot_description)/urdf/xtion.xacro" />
+
+  <link name="base_link">
+  </link>
+
+  <joint name="base_fixed" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="cart_link"/>
+  </joint>
+
+  <!-- Cart Link -->
+  <link name="cart_link">
+    <collision>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${horizontal} ${vertical} ${height1}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${horizontal} ${vertical} ${height1}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0"/>
+      <mass value="${mass * horizontal * vertical * height1}"/>
+      <inertia
+	  ixx="${mass * horizontal * vertical * height1 / 12.0 * (vertical*vertical + height1*height1)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass * horizontal * vertical * height1 / 12.0 * (height1*height1 + horizontal*horizontal)}" iyz="0.0"
+	  izz="${mass * horizontal * vertical * height1 / 12.0 * (horizontal*horizontal + vertical*vertical)}"/>
+    </inertial>
+  </link>
+
+  <joint name="joint0" type="fixed">
+    <parent link="cart_link"/>
+    <child link="attachment_link"/>
+    <origin xyz="0 0 ${height1}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Attachment Link -->
+  <link name="attachment_link">
+    <collision>
+      <origin xyz="0 0 ${height2/2}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${width} ${width} ${height2}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${height2/2}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${width} ${width} ${height2}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${height2/2}" rpy="0 0 0"/>
+      <mass value="${mass * width * width * height2}"/>
+      <inertia
+	  ixx="${mass * width * width * height2 / 12.0 * (width*width + height2*height2)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass * width * width * height2 / 12.0 * (height2*height2 + width*width)}" iyz="0.0"
+	  izz="${mass * width * width * height2 / 12.0 * (width*width + width*width)}"/>
+    </inertial>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="attachment_link"/>
+    <child link="camera_mount_link"/>
+    <origin xyz="${width} 0 ${height2 - axel_offset}" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="60.0" lower="${-M_PI * 1/6}" upper="${M_PI * 1/6}" velocity="0.45"/>
+    <dynamics damping="0.7"/>
+  </joint>
+
+  <!-- Camera Mount Link -->
+  <link name="camera_mount_link">
+    <collision>
+      <origin xyz="0 0 ${height3/2 - axel_offset}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${width} ${width} ${height3}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${height3/2 - axel_offset}" rpy="0 0 0"/>
+      <geometry>
+	<box size="${width} ${width} ${height3}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${height3/2 - axel_offset}" rpy="0 0 0"/>
+      <mass value="${mass * width * width * height3}"/>
+      <inertia
+	  ixx="${mass * width * width * height3 / 12.0 * (width*width + height3*height3)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass * width * width * height3 / 12.0 * (height3*height3 + width*width)}" iyz="0.0"
+	  izz="${mass * width * width * height3 / 12.0 * (width*width + width*width)}"/>
+    </inertial>
+  </link>
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <!-- camera1 -->
+  <xacro:xtion xyz="0.0074361 0.015 ${0.01875 + height3 - axel_offset}" rpy="0 0 0" parent="camera_mount_link" id="1" link_xyz="0.01 0.097 0.0"/>
+
+  <!-- camera2 -->
+  <xacro:xtion xyz="0.0074361 -0.015 ${0.01875 + height3 - axel_offset}" rpy="0 0 0" parent="camera_mount_link" id="2" link_xyz="0.01 -0.103 0.0"/>
+
+</robot>

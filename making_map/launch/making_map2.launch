@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="db_id" default="1"/>
+  <arg name="add_shake" default="false"/>
+  <!-- <arg name="use_sim_time" default="true"/> -->
+  <!-- <arg name="gui" default="true"/> -->
+  <!-- <arg name="headless" default="false"/> -->
+  <!-- <arg name="debug" default="false"/> -->
+  <arg name="camera_angle" default="45"/>
+  <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
+
+  <!-- ros_control cart_robot launch file -->
+  <include file="$(find cart_robot_control)/launch/cart_robot_control2.launch"/>
+
+  <!-- tf publisher -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame" />
+
+  <!-- include two_camera_rtabmap.launch -->
+  <include file="$(find making_map)/launch/two_camera_rtabmap.launch">
+    <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_shake$(arg camera_angle).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_noshake$(arg camera_angle).db" unless="$(arg add_shake)"/>
+  </include>
+
+  <!-- Run a python script -->
+  <node pkg="cart_robot_control" name="move_loop_closure2" type="move_loop_closure2" output="screen">
+    <param name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
+  </node>
+
+  <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen">
+    <param name="add_shake" value="$(arg add_shake)"/>
+  </node>
+
+</launch>

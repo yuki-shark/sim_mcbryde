@@ -16,7 +16,7 @@
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>cart_link</robotBaseFrame>
+      <robotBaseFrame>base_link</robotBaseFrame>
     </plugin>
   </gazebo>
 
@@ -40,4 +40,3 @@
   </gazebo>
 
 </robot>
-

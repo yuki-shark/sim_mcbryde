@@ -1,0 +1,26 @@
+cart_robot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers ---------------------------------------
+  joint1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint1
+    pid: {p: 1000.0, i: 0.01, d: 10.0}
+
+  camera1_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: camera1_joint
+    pid: {p: 1000.0, i: 0.01, d: 10.0}
+
+  camera2_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: camera2_joint
+    pid: {p: 1000.0, i: 0.01, d: 10.0}
+
+  camera3_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: camera3_joint
+    pid: {p: 1000.0, i: 0.01, d: 10.0}

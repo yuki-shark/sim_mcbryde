@@ -11,7 +11,7 @@
   <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
 
   <!-- ros_control cart_robot launch file -->
-  <include file="$(find cart_robot_control)/launch/cart_robot_control.launch"/>
+  <include file="$(find cart_robot_control)/launch/cart_robot_control1.launch"/>
 
   <!-- tf publisher -->
   <node pkg="tf" type="static_transform_publisher" name="optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
@@ -27,7 +27,7 @@
   </include>
 
   <!-- Run a python script -->
-  <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen"/>
+  <node pkg="cart_robot_control" name="move_loop_closure1" type="move_loop_closure1" output="screen"/>
 
   <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen">
     <param name="add_shake" value="$(arg add_shake)"/>

@@ -11,6 +11,9 @@ import os
 
 cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 # joint_controller = rospy.Publisher('/cart_robot/joint1_position_controller/command', Float64, queue_size=10)
+camera1_controller = rospy.Publisher('/cart_robot/camera1_joint_position_controller/command', Float64, queue_size=10)
+camera2_controller = rospy.Publisher('/cart_robot/camera2_joint_position_controller/command', Float64, queue_size=10)
+camera3_controller = rospy.Publisher('/cart_robot/camera3_joint_position_controller/command', Float64, queue_size=10)
 
 # Parameters
 linear_speed = 0.5
@@ -36,12 +39,14 @@ point4 = Pose2D(-6.0, -7.7, -math.pi)
 
 position_margin = 0.1
 angular_margin = 0.01
+current_state = -1
 
 kill_flag = False
 
 def callback(data):
 
     global msg
+    global camera_angle
     global current_state
     global kill_flag
 
@@ -120,10 +125,14 @@ def callback(data):
     else:
         rospy.logwarn("Cart robot is out of the path!")
         os.system('pkill roslaunch')
+
     cart_controller.publish(msg)
-    rospy.loginfo("%s", kill_flag)
     # joint_controller.publish(0)
     # rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
+    camera1_controller.publish(camera_angle)
+    camera2_controller.publish(0)
+    camera3_controller.publish(-1 * camera_angle)
+    # rospy.loginfo("camera_angle:%s", camera_angle)
 
 def stop_command():
     global msg
@@ -140,9 +149,16 @@ def stop_command():
 
 def auto_move_publisher():
     global msg
+    global camera_angle
     msg = Twist()
+    # angle_param = rospy.search_param('~camera_angle')
+    camera_angle = rospy.get_param("/move_loop_closure3/camera_angle")
+    # camera_angle = rospy.get_param(angle_param)
     rospy.loginfo("Cart robot started moving")
     rospy.init_node('auto_move_publisher', anonymous=True)
+    camera1_controller.publish(camera_angle)
+    camera2_controller.publish(0)
+    camera3_controller.publish(-1 * camera_angle)
     rospy.Subscriber("/odom", Odometry, callback)
     rospy.on_shutdown(stop_command)
     rospy.spin()

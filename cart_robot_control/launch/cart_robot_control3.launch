@@ -1,0 +1,26 @@
+<launch>
+
+  <!-- include cart_robot.launch -->
+  <include file="$(find cart_robot_gazebo)/launch/cart_robot3.launch"/>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find cart_robot_control)/config/cart_robot_control3.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/cart_robot" args="joint_state_controller
+					       joint1_position_controller
+                                               camera1_joint_position_controller
+                                               camera2_joint_position_controller
+                                               camera3_joint_position_controller">
+    <!-- <remap from="/camera1_joint" to="/cart_robot/camera1_joint"/> -->
+    <!-- <remap from="/camera2_joint" to="/cart_robot/camera2_joint"/> -->
+  </node>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/cart_robot/joint_states" />
+  </node>
+
+</launch>
