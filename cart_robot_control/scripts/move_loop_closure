@@ -30,10 +30,10 @@ angular_speed = -0.2
 # point4 = Pose2D(-7.3, -7.7, -math.pi)
 
 #mcbryde4
-point1 = Pose2D(-7.7, 6.5, math.pi/2)
-point2 = Pose2D(5.0, 6.5, 0.0)
-point3 = Pose2D(5.0, -8.0, -math.pi/2)
-point4 = Pose2D(-7.7, -8.0, -math.pi)
+point1 = Pose2D(-6.0, 7.0, math.pi/2)
+point2 = Pose2D(6.5, 7.0, 0.0)
+point3 = Pose2D(6.5, -7.7, -math.pi/2)
+point4 = Pose2D(-6.0, -7.7, -math.pi)
 
 position_margin = 0.1
 angular_margin = 0.01
