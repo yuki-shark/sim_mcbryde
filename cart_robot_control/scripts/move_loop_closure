@@ -7,6 +7,7 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose2D
 import tf.transformations
 import math
+import os
 
 cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 # joint_controller = rospy.Publisher('/cart_robot/joint1_position_controller/command', Float64, queue_size=10)
@@ -27,18 +28,22 @@ angular_speed = -0.2
 # point3 = Pose2D(5.5, -7.7, -math.pi/2)
 # point4 = Pose2D(-7.3, -7.7, -math.pi)
 
-#mcbryde4
+#mcbryde5
 point1 = Pose2D(-6.0, 7.0, math.pi/2)
-point2 = Pose2D(6.5, 7.0, 0.0)
-point3 = Pose2D(6.5, -7.7, -math.pi/2)
+point2 = Pose2D(6.7, 7.0, 0.0)
+point3 = Pose2D(6.7, -7.7, -math.pi/2)
 point4 = Pose2D(-6.0, -7.7, -math.pi)
 
 position_margin = 0.1
 angular_margin = 0.01
 
+kill_flag = False
+
 def callback(data):
 
     global msg
+    global current_state
+    global kill_flag
 
     x = data.pose.pose.position.x
     y = data.pose.pose.position.y
@@ -66,45 +71,57 @@ def callback(data):
        y <= point1.y:
         msg.linear.x = linear_speed
         # rospy.loginfo("state 0")
+        current_state = 0
     elif x > (point1.x - position_margin) and x < (point1.x + position_margin) and \
          y > (point1.y - position_margin) and y < (point1.y + position_margin) and \
          yaw >= point2.theta:
         msg.angular.z = angular_speed
         # rospy.loginfo("state 1")
+        current_state = 1
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          yaw > (point2.theta - angular_margin) and yaw < (point2.theta + angular_margin) and \
          x <= point2.x:
         msg.linear.x = linear_speed
         # rospy.loginfo("state 2")
+        current_state = 2
+        if kill_flag:
+            os.system('pkill roslaunch')
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          x > (point2.x - position_margin) and x < (point2.x + position_margin) and \
          yaw >= point3.theta:
         msg.angular.z = angular_speed
         # rospy.loginfo("state 3")
+        current_state = 3
     elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
          yaw > (point3.theta - angular_margin) and yaw < (point3.theta + angular_margin) and \
          y >= point3.y:
         msg.linear.x = linear_speed
         # rospy.loginfo("state 4")
+        current_state = 4
     elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
          y > (point3.y - position_margin) and y < (point3.y + position_margin) and \
          yaw >= (point4.theta + angular_margin):
         msg.angular.z = angular_speed
         # rospy.loginfo("state 5")
+        current_state = 5
     elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
          (yaw > -point4.theta - angular_margin  or yaw < point4.theta + angular_margin) and \
          x >= point4.x:
         msg.linear.x = linear_speed
         # rospy.loginfo("state 6")
+        current_state = 6
     elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
          x > (point4.x - position_margin) and x < (point4.x + position_margin) and \
          (yaw < (point4.theta + angular_margin) or yaw > point1.theta):
         msg.angular.z = angular_speed
         # rospy.loginfo("state 7")
+        current_state = 7
+        kill_flag = True
     else:
         rospy.logwarn("Cart robot is out of the path!")
-
+        os.system('pkill roslaunch')
     cart_controller.publish(msg)
+    rospy.loginfo("%s", kill_flag)
     # joint_controller.publish(0)
     # rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
 
