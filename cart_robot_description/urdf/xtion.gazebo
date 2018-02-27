@@ -17,6 +17,11 @@
             <near>0.20</near>
             <far>15.0</far>
           </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
         </camera>
         <plugin name="camera${id}_controller" filename="libgazebo_ros_openni_kinect.so">
           <cameraName>camera${id}</cameraName>
