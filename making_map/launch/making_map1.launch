@@ -14,7 +14,7 @@
   <include file="$(find cart_robot_control)/launch/cart_robot_control1.launch"/>
 
   <!-- tf publisher -->
-  <node pkg="tf" type="static_transform_publisher" name="optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="optical_frame_broadcaster" args="1 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame" />
 
   <!-- include rtabmap.launch -->
   <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
@@ -22,7 +22,8 @@
     <arg name="depth_topic" value="/camera1/depth_registered/image_raw" />
     <arg name="camera_info_topic" value="/camera1/rgb/camera_info" />
     <arg name="frame_id" value="/camera1_link"/>
-    <arg name="database_path" value="$(find making_map)/map_db/map$(arg db_id).db"/>
+    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_shake.db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_noshake.db" unless="$(arg add_shake)"/>
     <!-- <arg name="database_path" value="$(find making_map)/map_db/date +'%d-%m-%Y_%Ih%Mm%S' + .db"/> -->
   </include>
 

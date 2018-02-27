@@ -14,14 +14,15 @@
   <include file="$(find cart_robot_control)/launch/cart_robot_control3.launch"/>
 
   <!-- tf publisher -->
-  <node pkg="tf" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame 100" />
-  <node pkg="tf" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame 100" />
-  <node pkg="tf" type="static_transform_publisher" name="camera3_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera3_link camera3_optical_frame 100" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera1_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera1_link camera1_optical_frame" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera2_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera2_link camera2_optical_frame" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera3_optical_frame_broadcaster" args="0 0 0 -0.5 0.5 -0.5 0.5 camera3_link camera3_optical_frame" />
 
   <!-- include two_camera_rtabmap.launch -->
   <include file="$(find making_map)/launch/three_camera_rtabmap.launch">
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map$(arg db_id).db"/>
+    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_shake$(arg camera_angle).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_noshake$(arg camera_angle).db" unless="$(arg add_shake)"/>
   </include>
 
   <!-- Run a python script -->
