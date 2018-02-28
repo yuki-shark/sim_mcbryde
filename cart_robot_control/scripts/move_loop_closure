@@ -11,8 +11,8 @@ import os
 
 cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 num_cameras = rospy.get_param("/move_loop_closure/num_cameras")
+camera1_controller = rospy.Publisher('/cart_robot/camera1_joint_position_controller/command', Float64, queue_size=10)
 if num_cameras > 1:
-    camera1_controller = rospy.Publisher('/cart_robot/camera1_joint_position_controller/command', Float64, queue_size=10)
     camera2_controller = rospy.Publisher('/cart_robot/camera2_joint_position_controller/command', Float64, queue_size=10)
     if num_cameras > 2:
         camera3_controller = rospy.Publisher('/cart_robot/camera3_joint_position_controller/command', Float64, queue_size=10)
@@ -128,7 +128,10 @@ def callback(data):
         rospy.logwarn("Cart robot is out of the path!")
         os.system('pkill roslaunch')
     cart_controller.publish(msg)
-    if num_cameras == 2:
+    if num_cameras == 1:
+        # 1 Camera
+        camera1_controller.publish(0)
+    elif num_cameras == 2:
         # 2 Cameras
         camera1_controller.publish(camera_angle)
         camera2_controller.publish(-1 * camera_angle)
@@ -158,8 +161,7 @@ def auto_move_publisher():
     global msg
     global camera_angle
     msg = Twist()
-    if num_cameras > 1:
-        camera_angle = rospy.get_param("/move_loop_closure/camera_angle")
+    camera_angle = rospy.get_param("/move_loop_closure/camera_angle")
     rospy.loginfo("Cart robot started moving")
     rospy.init_node('auto_move_publisher', anonymous=True)
     # # 2 Cameras

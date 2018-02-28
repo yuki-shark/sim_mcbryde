@@ -1,5 +1,5 @@
 <launch>
-  <arg name="camera_angle" default="0.7853981633974483"/> <!-- TODO: dummy -->
+  <arg name="camera_angle" default="0"/>
   <arg name="num_cameras" default="1"/>
   <!-- include cart_robot.launch -->
   <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
@@ -12,7 +12,8 @@
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         output="screen" ns="/cart_robot" args="joint_state_controller
-                                               joint1_position_controller"/>
+                                               joint1_position_controller
+                                               camera1_joint_position_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"

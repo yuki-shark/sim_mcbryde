@@ -29,23 +29,23 @@
     <arg name="depth_topic" value="/camera1/depth_registered/image_raw" />
     <arg name="camera_info_topic" value="/camera1/rgb/camera_info" />
     <arg name="frame_id" value="/camera1_link"/>
-    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_shake.db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_noshake.db" unless="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_shake_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/one_cam_map_noshake_No$(arg db_id).db" unless="$(arg add_shake)"/>
     <!-- <arg name="database_path" value="$(find making_map)/map_db/date +'%d-%m-%Y_%Ih%Mm%S' + .db"/> -->
   </include>
 
   <!-- include two_camera_rtabmap.launch -->
   <include file="$(find making_map)/launch/two_camera_rtabmap.launch" if="$(eval arg('num_cameras') == 2)">
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_shake$(arg camera_angle).db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_noshake$(arg camera_angle).db" unless="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
   </include>
 
   <!-- include three_camera_rtabmap.launch -->
   <include file="$(find making_map)/launch/three_camera_rtabmap.launch" if="$(eval arg('num_cameras') == 3)">
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_shake$(arg camera_angle).db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_noshake$(arg camera_angle).db" unless="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/map_db/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
   </include>
 
   <!-- Run a python script -->
