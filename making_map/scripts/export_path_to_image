@@ -5,6 +5,7 @@ from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
 import cv2
 import time
+import rospkg
 
 class pathImageExporter:
     """Export nav_msgs/Path as Image"""
@@ -45,8 +46,13 @@ class pathImageExporter:
         return EmptyResponse()
 
 if __name__ == '__main__':
+    # map_name = 'three_cam_map_nonshake90_No10'
+    # file_path = '../map_image/' + map_name + '.jpg'
+    map_name = rospy.get_param("/export_path_to_image/map_name")
     try:
-        exporter = pathImageExporter("/rtabmap/mapPath", "image.jpg")
+        # exporter = pathImageExporter("/rtabmap/mapPath", "image.jpg")
+        # exporter = pathImageExporter("/rtabmap/mapPath", "../map_db/image.jpg")
+        exporter = pathImageExporter("/rtabmap/mapPath", map_name)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

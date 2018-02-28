@@ -58,4 +58,26 @@
     <param name="add_shake" value="$(arg add_shake)"/>
   </node>
 
+  <!-- Save map path as image -->
+  <group if="$(eval arg('num_cameras') == 1)">
+    <node pkg="making_map" name="export_path_to_image" type="export_path_to_image" output="screen">
+      <param name="map_name" value="$(find making_map)/map_image/one_cam_map_shake_No$(arg db_id).jpg" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/map_image/one_cam_map_noshake_No$(arg db_id).jpg" unless="$(arg add_shake)" />
+    </node>
+  </group>
+
+  <group if="$(eval arg('num_cameras') == 2)">
+    <node pkg="making_map" name="export_path_to_image" type="export_path_to_image" output="screen">
+      <param name="map_name" value="$(find making_map)/map_image/two_cam_map_shake$(arg camera_angle)_No$(arg db_id).jpg" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/map_image/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id).jpg" unless="$(arg add_shake)" />
+    </node>
+  </group>
+
+  <group if="$(eval arg('num_cameras') == 3)">
+    <node pkg="making_map" name="export_path_to_image" type="export_path_to_image" output="screen">
+      <param name="map_name" value="$(find making_map)/map_image/three_cam_map_shake$(arg camera_angle)_No$(arg db_id).jpg" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/map_image/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id).jpg" unless="$(arg add_shake)" />
+    </node>
+  </group>
+
 </launch>

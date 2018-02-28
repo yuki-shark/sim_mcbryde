@@ -92,6 +92,8 @@ def callback(data):
         # rospy.loginfo("state 2")
         current_state = 2
         if kill_flag:
+            os.system('rosservice call /path_to_image_exporter')
+            rospy.sleep(3)
             os.system('pkill roslaunch')
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          x > (point2.x - position_margin) and x < (point2.x + position_margin) and \
@@ -126,6 +128,8 @@ def callback(data):
         kill_flag = True
     else:
         rospy.logwarn("Cart robot is out of the path!")
+        os.system('rosservice call /path_to_image_exporter')
+        rospy.sleep(3)
         os.system('pkill roslaunch')
     cart_controller.publish(msg)
     if num_cameras == 1:
