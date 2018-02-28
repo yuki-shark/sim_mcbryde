@@ -1,19 +1,21 @@
 <launch>
-
+  <arg name="num_cameras" default="1"/>
   <!-- include cart_robot.launch -->
-  <include file="$(find cart_robot_gazebo)/launch/cart_robot1.launch"/>
+  <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
+    <arg name="num_cameras" value="$(arg num_cameras)"/>
+  </include>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find cart_robot_control)/config/cart_robot_control1.yaml" command="load"/>
+  <rosparam file="$(find cart_robot_control)/config/cart_robot_control.yaml" command="load"/>
 
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-	output="screen" ns="/cart_robot" args="joint_state_controller
-					  joint1_position_controller"/>
+        output="screen" ns="/cart_robot" args="joint_state_controller
+                                               joint1_position_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-	respawn="false" output="screen">
+        respawn="false" output="screen">
     <remap from="/joint_states" to="/cart_robot/joint_states" />
   </node>
 
