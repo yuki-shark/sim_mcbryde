@@ -1,10 +1,12 @@
 <launch>
   <arg name="camera_angle" default="0.7853981633974483"/> <!-- 45 deg -->
   <arg name="num_cameras" default="2"/>
+  <arg name="world_name" default="narrow"/>
   <!-- include cart_robot.launch -->
   <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
     <arg name="camera_angle" value="$(arg camera_angle)"/>
     <arg name="num_cameras" value="$(arg num_cameras)"/>
+    <arg name="world_name" value="$(arg world_name)"/>
     <arg name="extra_arg" value="-J camera1_joint -$(arg camera_angle)
                                  -J camera2_joint $(arg camera_angle)"/>
   </include>

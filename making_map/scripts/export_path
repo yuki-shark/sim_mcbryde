@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+import rospy
+from nav_msgs.msg import Path
+from std_srvs.srv import Empty, EmptyResponse
+import numpy as np
+import cv2
+import time
+import rospkg
+
+class pathImageExporter:
+    """Export nav_msgs/Path as Image"""
+
+    def __init__(self, pathTopic, _fileName):
+        self.imageName = _fileName + ".jpg"
+        self.pathName = _fileName + ".path"
+        self.x = None
+        self.y = None
+        self.z = None
+        self.width = 64
+        self.height = 64
+        self.first = True
+        self.imageNameFirst = _fileName + "_first.jpg"
+        rospy.init_node('path_to_image_exporter', anonymous=False)
+        rospy.Subscriber(pathTopic, Path, self.subscribePath)
+        rospy.Service('path_to_image_exporter', Empty, self.exportPathToImage)
+
+    def saveText(self):
+        with open(self.pathName, 'a') as f_handle:
+            np.savetxt(f_handle, (self.x, self.y, self.z), fmt='%.6f')
+
+    def subscribePath(self, path):
+        x = np.array([poses.pose.position.x for poses in path.poses])
+        y = np.array([poses.pose.position.y for poses in path.poses])
+        z = np.array([poses.pose.position.z for poses in path.poses])
+        if (x.size>1 and np.any(x[:-1] != self.x)):
+            if self.first:
+                self.exportPathToImage(Empty)
+                self.first = False
+            else:
+                self.saveText()
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def exportPathToImage(self, srv):
+        while self.x is None:
+            time.sleep(0.5)
+
+        # Save path data
+        self.saveText()
+
+        # affine mapping
+        x_range = np.max(self.x) - np.min(self.x)
+        y_range = np.max(self.y) - np.min(self.y)
+        if x_range > y_range:
+            self.height = int(round(self.height * (y_range / x_range)))
+        else:
+            self.width = int(round(self.width * (x_range / y_range)))
+        x = self.x * (self.width - 1) / (np.max(self.x) - np.min(self.x))
+        x = np.round(x + (0 - np.min(x))).astype(int)
+        y = self.y * (self.height - 1) / (np.max(self.y) - np.min(self.y))
+        y = np.round(y + (0 - np.min(y))).astype(int)
+
+        matImage = np.full((self.width, self.height, 3), 255)
+        matImage[x, y] = np.array([[0, 0, 255]] * x.shape[0])
+        if self.first:
+            cv2.imwrite(self.imageNameFirst, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        else:
+            cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        return EmptyResponse()
+
+if __name__ == '__main__':
+    # map_name = 'three_cam_map_nonshake90_No10'
+    # file_path = '../map_image/' + map_name + '.jpg'
+    map_name = rospy.get_param("/export_path/map_name")
+    # map_name = "test"
+    try:
+        # exporter = pathImageExporter("/rtabmap/mapPath", "image.jpg")
+        # exporter = pathImageExporter("/rtabmap/mapPath", "../map_db/image.jpg")
+        exporter = pathImageExporter("/rtabmap/mapPath", map_name)
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass

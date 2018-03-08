@@ -8,10 +8,11 @@
   <arg name="camera_angle" default="45"/>
   <arg name="num_cameras" default="1"/>
   <arg name="extra_arg" default=""/>
+  <arg name="world_name" default="narrow"/>
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find cart_robot_gazebo)/world/cart_robot.world"/>
+    <arg name="world_name" value="$(find cart_robot_gazebo)/world/cart_robot_$(arg world_name).world"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -28,9 +29,16 @@
   <!-- <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" -->
   <!--   args="-x -7.5 -y 5.0 -Y 1.570796  -urdf -model cart_robot -param robot_description"/> -->
 
-  <!-- mcbryde4 -->
+  <!-- mcbryde5 -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-        args="-x -6.0 -y 0.0 -Y 1.570796  -urdf -model cart_robot -param robot_description $(arg extra_arg)"/>
+        args="-x -6.0 -y 0.0 -Y 1.570796  -urdf -model cart_robot -param robot_description $(arg extra_arg)"
+        if="$(eval arg('world_name') == 'narrow')"/>
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-x -5.3 -y 5.0 -Y 1.570796  -urdf -model cart_robot -param robot_description $(arg extra_arg)"
+        if="$(eval arg('world_name') == 'middle')"/>
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-x -5.0 -y 4.5 -Y 1.570796  -urdf -model cart_robot -param robot_description $(arg extra_arg)"
+        if="$(eval arg('world_name') == 'wide')"/>
 
   <!-- ros_control cart_robot launch file -->
   <!--include file="$(find cart_robot_control)/launch/cart_robot_control.launch" /-->

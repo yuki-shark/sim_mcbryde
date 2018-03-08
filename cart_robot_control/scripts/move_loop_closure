@@ -8,6 +8,7 @@ from geometry_msgs.msg import Pose2D
 import tf.transformations
 import math
 import os
+# import roslaunch
 
 cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 num_cameras = rospy.get_param("/move_loop_closure/num_cameras")
@@ -33,13 +34,26 @@ angular_speed = -0.2
 # point3 = Pose2D(5.5, -7.7, -math.pi/2)
 # point4 = Pose2D(-7.3, -7.7, -math.pi)
 
-#mcbryde5
-point1 = Pose2D(-6.0, 7.0, math.pi/2)
-point2 = Pose2D(6.7, 7.0, 0.0)
-point3 = Pose2D(6.7, -7.7, -math.pi/2)
-point4 = Pose2D(-6.0, -7.7, -math.pi)
+corridor = rospy.get_param("/move_loop_closure/corridor")
 
-position_margin = 0.1
+#mcbryde5
+if corridor=='narrow':
+    point1 = Pose2D(-6.0, 7.0, math.pi/2)
+    point2 = Pose2D(6.7, 7.0, 0.0)
+    point3 = Pose2D(6.7, -7.7, -math.pi/2)
+    point4 = Pose2D(-6.0, -7.7, -math.pi)
+elif corridor=='middle':
+    point1 = Pose2D(-5.3, 6.2, math.pi/2)
+    point2 = Pose2D(6.0, 6.2, 0.0)
+    point3 = Pose2D(6.0, -7.2, -math.pi/2)
+    point4 = Pose2D(-5.3, -7.2, -math.pi)
+else:
+    point1 = Pose2D(-5.0, 6.0, math.pi/2)
+    point2 = Pose2D(5.5, 6.0, 0.0)
+    point3 = Pose2D(5.5, -6.5, -math.pi/2)
+    point4 = Pose2D(-5.0, -6.5, -math.pi)
+
+position_margin = 0.2
 angular_margin = 0.01
 current_state = -1
 
