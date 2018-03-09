@@ -10,7 +10,15 @@
   <arg name="camera_angle" default="45"/>
   <arg name="num_cameras" default="1"/>
   <arg name="world_name" default="narrow"/>
+  <arg name="rviz" default="false"/>
   <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
+
+  <!-- Hack to create the directory -->
+  <param name="mkdir_tmp" command="mkdir -p $(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera" if="$(eval arg('num_cameras') == 1)"/>
+  <param name="mkdir_tmp" command="mkdir -p $(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras" if="$(eval arg('num_cameras') == 2)"/>
+  <param name="mkdir_tmp" command="mkdir -p $(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras" if="$(eval arg('num_cameras') == 3)"/>
+  <!-- TODO: delete unused param -->
+  <!-- <rosparam command="delete" param="mkdir_tmp"/> -->
 
   <!-- ros_control cart_robot launch file -->
   <include file="$(find cart_robot_control)/launch/cart_robot_control$(arg num_cameras).launch">
@@ -83,4 +91,5 @@
     </node>
   </group>
 
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz"/>
 </launch>
