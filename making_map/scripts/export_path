@@ -18,8 +18,8 @@ class pathImageExporter:
         self.z = None
         self.width = 64
         self.height = 64
-        self.first = True
-        self.imageNameFirst = _fileName + "_first.jpg"
+        # self.first = True
+        # self.imageNameFirst = _fileName + "_first.jpg"
         rospy.init_node('path_to_image_exporter', anonymous=False)
         rospy.Subscriber(pathTopic, Path, self.subscribePath)
         rospy.Service('path_to_image_exporter', Empty, self.exportPathToImage)
@@ -29,18 +29,21 @@ class pathImageExporter:
             np.savetxt(f_handle, (self.x, self.y, self.z), fmt='%.6f')
 
     def subscribePath(self, path):
-        x = np.array([poses.pose.position.x for poses in path.poses])
-        y = np.array([poses.pose.position.y for poses in path.poses])
-        z = np.array([poses.pose.position.z for poses in path.poses])
-        if (x.size>1 and np.any(x[:-1] != self.x)):
-            if self.first:
-                self.exportPathToImage(Empty)
-                self.first = False
-            else:
-                self.saveText()
-        self.x = x
-        self.y = y
-        self.z = z
+        # x = np.array([poses.pose.position.x for poses in path.poses])
+        # y = np.array([poses.pose.position.y for poses in path.poses])
+        # z = np.array([poses.pose.position.z for poses in path.poses])
+        # if (x.size>1 and np.any(x[:-1] != self.x)):
+        #     if self.first:
+        #         self.exportPathToImage(Empty)
+        #         self.first = False
+        #     else:
+        #         self.saveText()
+        # self.x = x
+        # self.y = y
+        # self.z = z
+        self.x = np.array([poses.pose.position.x for poses in path.poses])
+        self.y = np.array([poses.pose.position.y for poses in path.poses])
+        self.z = np.array([poses.pose.position.z for poses in path.poses])
 
     def exportPathToImage(self, srv):
         while self.x is None:
@@ -63,10 +66,11 @@ class pathImageExporter:
 
         matImage = np.full((self.width, self.height, 3), 255)
         matImage[x, y] = np.array([[0, 0, 255]] * x.shape[0])
-        if self.first:
-            cv2.imwrite(self.imageNameFirst, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
-        else:
-            cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        # if self.first:
+        #     cv2.imwrite(self.imageNameFirst, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        # else:
+        #     cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
         return EmptyResponse()
 
 if __name__ == '__main__':

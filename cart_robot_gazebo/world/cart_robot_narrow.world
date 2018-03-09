@@ -84,336 +84,336 @@
     </spherical_coordinates>
     <model name='mcbryde5'>
       <pose frame=''>0.000403 -0.034137 0 0 -0 0</pose>
-      <link name='sphere_0'>
-        <collision name='Sphere_0_Collision'>
-          <geometry>
-            <sphere>
-              <radius>1.0</radius>
-            </sphere>
-          </geometry>
-          <pose frame=''>0.5 -5.5 0.5 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Sphere_0_Visual'>
-          <pose frame=''>0.5 -5.5 0.5 0 -0 0</pose>
-          <geometry>
-            <sphere>
-              <radius>1.0</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='sphere_1'>
-        <collision name='Sphere_1_Collision'>
-          <geometry>
-            <sphere>
-              <radius>1.0</radius>
-            </sphere>
-          </geometry>
-          <pose frame=''>6.8 -7.5 2.3 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Sphere_1_Visual'>
-          <pose frame=''>6.8 -7.5 2.3 0 -0 0</pose>
-          <geometry>
-            <sphere>
-              <radius>1.0</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='sphere_2'>
-        <collision name='Sphere_2_Collision'>
-          <geometry>
-            <sphere>
-              <radius>0.3</radius>
-            </sphere>
-          </geometry>
-          <pose frame=''>-6.8 2.8 0.3 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Sphere_2_Visual'>
-          <pose frame=''>-6.8 2.8 0.3 0 -0 0</pose>
-          <geometry>
-            <sphere>
-              <radius>0.3</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='Cylinder_0'>
-        <collision name='Cylinder_0_Collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.5</radius>
-              <length>2</length>
-            </cylinder>
-          </geometry>
-          <pose frame=''>-7.0 -8.5 1.0 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Cylinder_0_Visual'>
-          <pose frame=''>-7.0 -8.5 1.0 0 -0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.5</radius>
-              <length>2</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='Cylinder_1'>
-        <collision name='Cylinder_1_Collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.15</radius>
-              <length>1.8</length>
-            </cylinder>
-          </geometry>
-          <pose frame=''>-1.5 -7.0 1.0 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Cylinder_1_Visual'>
-          <pose frame=''>-1.5 -7.0 1.0 0 -0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.15</radius>
-              <length>1.8</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='Cylinder_2'>
-        <collision name='Cylinder_2_Collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.3</radius>
-              <length>0.8</length>
-            </cylinder>
-          </geometry>
-          <pose frame=''>-6.8 -4.3 1.0 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Cylinder_2_Visual'>
-          <pose frame=''>-6.8 -4.3 1.0 0 -0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.3</radius>
-              <length>0.8</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='Cylinder_3'>
-        <collision name='Cylinder_3_Collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.15</radius>
-              <length>1.4</length>
-            </cylinder>
-          </geometry>
-          <pose frame=''>4.0 -7.0 1.0 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Cylinder_3_Visual'>
-          <pose frame=''>4.0 -7.0 1.0 0 -0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.15</radius>
-              <length>1.4</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <link name='Cylinder_4'>
-        <collision name='Cylinder_4_Collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.05</radius>
-              <length>1.0</length>
-            </cylinder>
-          </geometry>
-          <pose frame=''>-5.0 -7.0 0.5 0 -0 0</pose>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='Cylinder_4_Visual'>
-          <pose frame=''>-5.0 -7.0 0.5 0 -0 0</pose>
-          <geometry>
-            <cylinder>
-              <radius>0.05</radius>
-              <length>1.0</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <name>Gazebo/Grey</name>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
+      <!-- <link name='sphere_0'> -->
+      <!--   <collision name='Sphere_0_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>1.0</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>0.5 -5.5 0.5 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Sphere_0_Visual'> -->
+      <!--     <pose frame=''>0.5 -5.5 0.5 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>1.0</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='sphere_1'> -->
+      <!--   <collision name='Sphere_1_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>1.0</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>6.8 -7.5 2.3 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Sphere_1_Visual'> -->
+      <!--     <pose frame=''>6.8 -7.5 2.3 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>1.0</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='sphere_2'> -->
+      <!--   <collision name='Sphere_2_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>0.3</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>-6.8 2.8 0.3 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Sphere_2_Visual'> -->
+      <!--     <pose frame=''>-6.8 2.8 0.3 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <sphere> -->
+      <!--         <radius>0.3</radius> -->
+      <!--       </sphere> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='Cylinder_0'> -->
+      <!--   <collision name='Cylinder_0_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.5</radius> -->
+      <!--         <length>2</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>-7.0 -8.5 1.0 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Cylinder_0_Visual'> -->
+      <!--     <pose frame=''>-7.0 -8.5 1.0 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.5</radius> -->
+      <!--         <length>2</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='Cylinder_1'> -->
+      <!--   <collision name='Cylinder_1_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.15</radius> -->
+      <!--         <length>1.8</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>-1.5 -7.0 1.0 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Cylinder_1_Visual'> -->
+      <!--     <pose frame=''>-1.5 -7.0 1.0 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.15</radius> -->
+      <!--         <length>1.8</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='Cylinder_2'> -->
+      <!--   <collision name='Cylinder_2_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.3</radius> -->
+      <!--         <length>0.8</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>-6.8 -4.3 1.0 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Cylinder_2_Visual'> -->
+      <!--     <pose frame=''>-6.8 -4.3 1.0 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.3</radius> -->
+      <!--         <length>0.8</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='Cylinder_3'> -->
+      <!--   <collision name='Cylinder_3_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.15</radius> -->
+      <!--         <length>1.4</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>4.0 -7.0 1.0 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Cylinder_3_Visual'> -->
+      <!--     <pose frame=''>4.0 -7.0 1.0 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.15</radius> -->
+      <!--         <length>1.4</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
+      <!-- <link name='Cylinder_4'> -->
+      <!--   <collision name='Cylinder_4_Collision'> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.05</radius> -->
+      <!--         <length>1.0</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <pose frame=''>-5.0 -7.0 0.5 0 -0 0</pose> -->
+      <!--     <max_contacts>10</max_contacts> -->
+      <!--     <surface> -->
+      <!--       <contact> -->
+      <!--         <ode/> -->
+      <!--       </contact> -->
+      <!--       <bounce/> -->
+      <!--       <friction> -->
+      <!--         <torsional> -->
+      <!--           <ode/> -->
+      <!--         </torsional> -->
+      <!--         <ode/> -->
+      <!--       </friction> -->
+      <!--     </surface> -->
+      <!--   </collision> -->
+      <!--   <visual name='Cylinder_4_Visual'> -->
+      <!--     <pose frame=''>-5.0 -7.0 0.5 0 -0 0</pose> -->
+      <!--     <geometry> -->
+      <!--       <cylinder> -->
+      <!--         <radius>0.05</radius> -->
+      <!--         <length>1.0</length> -->
+      <!--       </cylinder> -->
+      <!--     </geometry> -->
+      <!--     <material> -->
+      <!--       <script> -->
+      <!--         <name>Gazebo/Grey</name> -->
+      <!--         <uri>file://media/materials/scripts/gazebo.material</uri> -->
+      <!--       </script> -->
+      <!--     </material> -->
+      <!--   </visual> -->
+      <!--   <self_collide>0</self_collide> -->
+      <!--   <kinematic>0</kinematic> -->
+      <!--   <gravity>1</gravity> -->
+      <!-- </link> -->
       <link name='Wall_102'>
         <collision name='Wall_102_Collision'>
           <geometry>
