@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import rospy
+import tf
+import tf2_ros
+from nav_msgs.msg import Odometry
 from nav_msgs.msg import Path
+from geometry_msgs.msg import TransformStamped
 from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
 import cv2
@@ -18,15 +22,74 @@ class pathImageExporter:
         self.z = None
         self.width = 64
         self.height = 64
+        # self.listener = tf.TransformListener()
         # self.first = True
         # self.imageNameFirst = _fileName + "_first.jpg"
+        self.cart_init = None
+        self.cart_pos = None
+        self.data = np.empty((0, 7)) # time viz_x viz_y viz_z ref_x ref_y ref_z
         rospy.init_node('path_to_image_exporter', anonymous=False)
-        rospy.Subscriber(pathTopic, Path, self.subscribePath)
+        self.initTime = rospy.Time.now()
+        # rospy.Subscriber(pathTopic, Path, self.subscribePath)
         rospy.Service('path_to_image_exporter', Empty, self.exportPathToImage)
+        # # Subscribe /odom just once
+        # self.cart_odom_sub = rospy.Subscriber('/odom', Odometry, self.initCartTF)
+        rospy.Subscriber('/odom', Odometry, self.cartOdom)
+        rospy.Subscriber('/rtabmap/odom', Odometry, self.visualOdomTF)
+
+    def initCartTF(self, _odom):
+        # """Broadcast static tf of initial cart frame"""
+        # broadcaster = tf2_ros.StaticTransformBroadcaster()
+        # static_transformStamped = TransformStamped()
+
+        # static_transformStamped.header.stamp = rospy.Time.now()
+        # static_transformStamped.header.frame_id = "odom"
+        # static_transformStamped.child_frame_id = "cart_init"
+        # static_transformStamped.transform.translation = _odom.pose.pose.position
+        # static_transformStamped.transform.rotation = _odom.pose.pose.orientation
+
+        # broadcaster.sendTransform(static_transformStamped)
+        pos = _odom.pose.pose.position
+        self.initTime = rospy.Time.now()
+        self.cart_init = np.array([pos.x, pos.y, pos.z])
+        self.cart_odom_sub.unregister()
+
+    def cartOdom(self, _odom):
+        pos = _odom.pose.pose.position
+        # if self.cart_init is None:
+        #     self.initTime = rospy.Time.now()
+        #     self.cart_init = np.array([pos.x, pos.y, pos.z])
+        self.cart_pos = np.array([pos.x, pos.y, pos.z])
+
+    def visualOdomTF(self, _odom):
+        if self.data.shape[0] == 0:
+            self.initTime = rospy.Time.now()
+            self.cart_init = self.cart_pos
+        pos = _odom.pose.pose.position
+        visual_odom_pos = np.array([pos.x, pos.y, pos.z])
+
+        if (self.cart_pos is not None):
+            cur_time = (rospy.Time.now() - self.initTime).to_sec()
+            self.data = np.append(self.data, [np.append(cur_time, [visual_odom_pos, self.cart_pos - self.cart_init])], axis=0)
+
+        # """Broadcast tf of visual odometry"""
+        # broadcaster = tf.TransformBroadcaster()
+        # transformStamped = TransformStamped()
+
+        # transformStamped.header.stamp = rospy.Time.now()
+        # transformStamped.header.frame_id = "odom"
+        # transformStamped.child_frame_id = "visual_odom"
+        # transformStamped.transform.translation = _odom.pose.pose.position
+        # transformStamped.transform.rotation = _odom.pose.pose.orientation
+
+        # broadcaster.sendTransformMessage(transformStamped)
+        # # transformation = self.listener.lookupTransform("visual_odom", "odom", rospy.Time(0))
 
     def saveText(self):
-        with open(self.pathName, 'a') as f_handle:
-            np.savetxt(f_handle, (self.x, self.y, self.z), fmt='%.6f')
+        # with open(self.pathName, 'a') as f_handle:
+            # np.savetxt(f_handle, (self.x, self.y, self.z), fmt='%.6f')
+        np.savetxt(self.pathName, self.data, fmt='%.6f') # time viz_x viz_y viz_z ref_x ref_y ref_z
+
 
     def subscribePath(self, path):
         # x = np.array([poses.pose.position.x for poses in path.poses])
@@ -46,25 +109,31 @@ class pathImageExporter:
         self.z = np.array([poses.pose.position.z for poses in path.poses])
 
     def exportPathToImage(self, srv):
-        while self.x is None:
-            time.sleep(0.5)
-
         # Save path data
         self.saveText()
+
+        ### Only for loop-closure disabled mode ###
+        self.x = self.data[:, 1]
+        self.y = self.data[:, 2]
+        self.z = self.data[:, 3]
+        ###########################################
 
         # affine mapping
         x_range = np.max(self.x) - np.min(self.x)
         y_range = np.max(self.y) - np.min(self.y)
+
         if x_range > y_range:
-            self.height = int(round(self.height * (y_range / x_range)))
+            width = self.width
+            height = int(round(self.height * (y_range / x_range)))
         else:
-            self.width = int(round(self.width * (x_range / y_range)))
-        x = self.x * (self.width - 1) / (np.max(self.x) - np.min(self.x))
+            width = int(round(self.width * (x_range / y_range)))
+            height = self.height
+        x = self.x * (width - 1) / (np.max(self.x) - np.min(self.x))
         x = np.round(x + (0 - np.min(x))).astype(int)
-        y = self.y * (self.height - 1) / (np.max(self.y) - np.min(self.y))
+        y = self.y * (height - 1) / (np.max(self.y) - np.min(self.y))
         y = np.round(y + (0 - np.min(y))).astype(int)
 
-        matImage = np.full((self.width, self.height, 3), 255)
+        matImage = np.full((width, height, 3), 255)
         matImage[x, y] = np.array([[0, 0, 255]] * x.shape[0])
         # if self.first:
         #     cv2.imwrite(self.imageNameFirst, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
