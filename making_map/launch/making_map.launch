@@ -72,22 +72,22 @@
   <!-- Save map path as image -->
   <group if="$(eval arg('num_cameras') == 1)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/one_camera/one_cam_map_shake_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/one_camera/one_cam_map_noshake_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 
   <group if="$(eval arg('num_cameras') == 2)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 
   <group if="$(eval arg('num_cameras') == 3)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_image/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 
