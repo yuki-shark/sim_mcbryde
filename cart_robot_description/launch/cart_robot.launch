@@ -1,6 +1,7 @@
 <launch>
+  <arg name="num_cameras" default="1" />
   <param name="robot_description"
-    command="$(find xacro)/xacro --inorder '$(find cart_robot_description)/urdf/cart_robot.xacro'" />
+    command="$(find xacro)/xacro --inorder '$(find cart_robot_description)/urdf/cart_robot$(arg num_cameras).xacro'" />
 
   <!-- send fake joint values -->
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">

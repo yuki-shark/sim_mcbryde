@@ -19,7 +19,7 @@
   <rosparam file="$(find cart_robot_control)/config/cart_robot_control.yaml" command="load"/>
 
   <!-- load the controllers -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
         output="screen" ns="/cart_robot" args="joint_state_controller
                                                joint1_position_controller
                                                camera1_joint_position_controller
