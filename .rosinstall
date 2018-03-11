@@ -1,0 +1,10 @@
+- git:
+    local-name: sim_mcbryde
+    uri: https://github.com/yuki-shark/sim_mcbryde.git
+- git:
+    local-name: rtabmap
+    uri: https://github.com/introlab/rtabmap.git
+    version: 0.14.0
+- git:
+    local-name: rtabmap_ros
+    uri: https://github.com/introlab/rtabmap_ros.git
