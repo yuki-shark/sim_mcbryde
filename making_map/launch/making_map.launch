@@ -10,6 +10,8 @@
   <arg name="camera_angle" default="45"/>
   <arg name="num_cameras" default="1"/>
   <arg name="world_name" default="narrow"/>
+  <arg name="gazebo_gui" default="true"/>
+  <arg name="rtabmapviz" default="true"/>
   <arg name="rviz" default="false"/>
   <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
 
@@ -25,6 +27,7 @@
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
     <arg name="num_cameras" value="$(arg num_cameras)"/>
     <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
   </include>
 
   <!-- tf publisher -->
@@ -42,6 +45,7 @@
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake_No$(arg db_id).db" if="$(arg add_shake)"/>
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake_No$(arg db_id).db" unless="$(arg add_shake)"/>
     <!-- <arg name="database_path" value="$(find making_map)/map_db/date +'%d-%m-%Y_%Ih%Mm%S' + .db"/> -->
+    <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
 
   <!-- include two_camera_rtabmap.launch -->
@@ -49,6 +53,7 @@
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
+    <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
 
   <!-- include three_camera_rtabmap.launch -->
@@ -56,6 +61,7 @@
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
     <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
+    <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
 
   <!-- Run a python script -->
