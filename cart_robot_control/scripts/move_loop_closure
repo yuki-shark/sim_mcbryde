@@ -5,6 +5,7 @@ from std_msgs.msg import Float64
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose2D
+from std_srvs.srv import Empty
 import tf.transformations
 import math
 import os
@@ -106,9 +107,14 @@ def callback(data):
         # rospy.loginfo("state 2")
         current_state = 2
         if kill_flag:
-            os.system('rosservice call /path_to_image_exporter')
-            rospy.sleep(3)
-            os.system('pkill roslaunch')
+            rospy.wait_for_service('path_to_image_exporter')
+            path_to_image = rospy.ServiceProxy('path_to_image_exporter', Empty)
+            path_to_image()
+            # os.system('rosservice call /path_to_image_exporter')
+            rospy.wait_for_service('run_loop')
+            run_loop = rospy.ServiceProxy('run_loop', Empty)
+            run_loop()
+            # os.system('rosservice call /run_loop')
     elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
          x > (point2.x - position_margin) and x < (point2.x + position_margin) and \
          yaw >= point3.theta:
@@ -142,9 +148,14 @@ def callback(data):
         kill_flag = True
     else:
         rospy.logwarn("Cart robot is out of the path!")
-        os.system('rosservice call /path_to_image_exporter')
-        rospy.sleep(3)
-        os.system('pkill roslaunch')
+        rospy.wait_for_service('path_to_image_exporter')
+        path_to_image = rospy.ServiceProxy('path_to_image_exporter', Empty)
+        path_to_image()
+        # os.system('rosservice call /path_to_image_exporter')
+        rospy.wait_for_service('run_loop')
+        run_loop = rospy.ServiceProxy('run_loop', Empty)
+        run_loop()
+        # os.system('rosservice call /run_loop')
     cart_controller.publish(msg)
     if num_cameras == 1:
         # 1 Camera

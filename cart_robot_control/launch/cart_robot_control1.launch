@@ -2,10 +2,12 @@
   <arg name="camera_angle" default="0"/>
   <arg name="num_cameras" default="1"/>
   <arg name="world_name" default="narrow"/>
+  <arg name="gui" default="true"/>
   <!-- include cart_robot.launch -->
   <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
     <arg name="num_cameras" value="$(arg num_cameras)"/>
     <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="gui" value="$(arg gui)"/>
   </include>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
