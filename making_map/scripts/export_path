@@ -124,9 +124,9 @@ class pathImageExporter:
 
         if x_range > y_range:
             width = self.width
-            height = int(round(self.height * (y_range / x_range)))
+            height = int(np.ceil(self.height * (y_range / x_range)))
         else:
-            width = int(round(self.width * (x_range / y_range)))
+            width = int(np.ceil(self.width * (x_range / y_range)))
             height = self.height
         x = self.x * (width - 1) / (np.max(self.x) - np.min(self.x))
         x = np.round(x + (0 - np.min(x))).astype(int)
