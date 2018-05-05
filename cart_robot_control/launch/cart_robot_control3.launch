@@ -3,6 +3,7 @@
   <arg name="num_cameras" default="3"/>
   <arg name="world_name" default="narrow"/>
   <arg name="gui" default="true"/>
+  <arg name="horizontal_fov" default="58.0"/>
   <!-- include cart_robot.launch -->
   <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
     <arg name="camera_angle" value="$(arg camera_angle)"/>
@@ -13,6 +14,7 @@
                                  -J camera3_joint -$(arg camera_angle)
                                  "/>
     <arg name="gui" value="$(arg gui)"/>
+    <arg name="horizontal_fov" value="$(arg horizontal_fov)"/>
   </include>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->

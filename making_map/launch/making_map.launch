@@ -13,6 +13,7 @@
   <arg name="gazebo_gui" default="true"/>
   <arg name="rtabmapviz" default="true"/>
   <arg name="rviz" default="false"/>
+  <arg name="horizontal_fov" default="58.0"/>
   <!-- <param name="start_time" command="date +'%d-%m-%Y_%Ih%Mm%S'"/> -->
 
   <!-- Hack to create the directory -->
@@ -28,6 +29,7 @@
     <arg name="num_cameras" value="$(arg num_cameras)"/>
     <arg name="world_name" value="$(arg world_name)"/>
     <arg name="gui" value="$(arg gazebo_gui)"/>
+    <arg name="horizontal_fov" value="$(arg horizontal_fov)"/>
   </include>
 
   <!-- tf publisher -->
@@ -42,8 +44,9 @@
     <arg name="depth_topic" value="/camera1/depth_registered/image_raw" />
     <arg name="camera_info_topic" value="/camera1/rgb/camera_info" />
     <arg name="frame_id" value="/camera1_link"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake_No$(arg db_id).db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake_No$(arg db_id).db" unless="$(arg add_shake)"/>
+    <!-- <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/> -->
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" unless="$(arg add_shake)"/>
     <!-- <arg name="database_path" value="$(find making_map)/map_db/date +'%d-%m-%Y_%Ih%Mm%S' + .db"/> -->
     <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
@@ -51,16 +54,16 @@
   <!-- include two_camera_rtabmap.launch -->
   <include file="$(find making_map)/launch/two_camera_rtabmap.launch" if="$(eval arg('num_cameras') == 2)">
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" unless="$(arg add_shake)"/>
     <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
 
   <!-- include three_camera_rtabmap.launch -->
   <include file="$(find making_map)/launch/three_camera_rtabmap.launch" if="$(eval arg('num_cameras') == 3)">
     <arg name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_No$(arg db_id).db" if="$(arg add_shake)"/>
-    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id).db" unless="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" if="$(arg add_shake)"/>
+    <arg name="database_path" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id).db" unless="$(arg add_shake)"/>
     <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
   </include>
 
@@ -78,22 +81,22 @@
   <!-- Save map path as image -->
   <group if="$(eval arg('num_cameras') == 1)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/one_camera/one_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 
   <group if="$(eval arg('num_cameras') == 2)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/two_cameras/two_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 
   <group if="$(eval arg('num_cameras') == 3)">
     <node pkg="making_map" name="export_path" type="export_path" output="screen">
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_No$(arg db_id)" if="$(arg add_shake)"/>
-      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_No$(arg db_id)" unless="$(arg add_shake)" />
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_shake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" if="$(arg add_shake)"/>
+      <param name="map_name" value="$(find making_map)/all_results/$(arg world_name)/map_db/$(arg add_shake)/three_cameras/three_cam_map_noshake$(arg camera_angle)_fov$(arg horizontal_fov)_No$(arg db_id)" unless="$(arg add_shake)" />
     </node>
   </group>
 

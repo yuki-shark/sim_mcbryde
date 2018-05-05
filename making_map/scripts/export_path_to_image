@@ -23,6 +23,7 @@ class pathImageExporter:
     def subscribePath(self, path):
         self.x = np.array([poses.pose.position.x for poses in path.poses])
         self.y = np.array([poses.pose.position.y for poses in path.poses])
+        self.z = np.array([poses.pose.position.z for poses in path.poses])
 
     def exportPathToImage(self, srv):
         while self.x is None:
@@ -31,18 +32,21 @@ class pathImageExporter:
         # affine mapping
         x_range = np.max(self.x) - np.min(self.x)
         y_range = np.max(self.y) - np.min(self.y)
-        if x_range > y_range:
-            self.height = int(round(self.height * (y_range / x_range)))
-        else:
-            self.width = int(round(self.width * (x_range / y_range)))
-        self.x = self.x * (self.width - 1) / (np.max(self.x) - np.min(self.x))
-        self.x = np.round(self.x + (0 - np.min(self.x))).astype(int)
-        self.y = self.y * (self.height - 1) / (np.max(self.y) - np.min(self.y))
-        self.y = np.round(self.y + (0 - np.min(self.y))).astype(int)
 
-        matImage = np.full((self.width, self.height, 3), 255)
-        matImage[self.x, self.y] = np.array([[0, 0, 255]] * self.x.shape[0])
-        cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        if x_range > 0 and y_range > 0:
+            if x_range > y_range:
+                self.height = int(round(self.height * (y_range / x_range)))
+            else:
+                self.width = int(round(self.width * (x_range / y_range)))
+            self.x = self.x * (self.width - 1) / (np.max(self.x) - np.min(self.x))
+            self.x = np.round(self.x + (0 - np.min(self.x))).astype(int)
+            self.y = self.y * (self.height - 1) / (np.max(self.y) - np.min(self.y))
+            self.y = np.round(self.y + (0 - np.min(self.y))).astype(int)
+
+            matImage = np.full((self.width, self.height, 3), 255)
+            matImage[self.x, self.y] = np.array([[0, 0, 255]] * self.x.shape[0])
+            cv2.imwrite(self.imageName, matImage, [cv2.IMWRITE_JPEG_QUALITY, 90])
+
         return EmptyResponse()
 
 if __name__ == '__main__':

@@ -55,7 +55,7 @@ else:
     point4 = Pose2D(-5.0, -6.5, -math.pi)
 
 position_margin = 0.2
-angular_margin = 0.01
+angular_margin = 0.03
 current_state = -1
 
 kill_flag = False
@@ -151,7 +151,7 @@ def callback(data):
         rospy.wait_for_service('path_to_image_exporter')
         path_to_image = rospy.ServiceProxy('path_to_image_exporter', Empty)
         path_to_image()
-        # os.system('rosservice call /path_to_image_exporter')
+        # # os.system('rosservice call /path_to_image_exporter')
         rospy.wait_for_service('run_loop')
         run_loop = rospy.ServiceProxy('run_loop', Empty)
         run_loop()
@@ -159,7 +159,7 @@ def callback(data):
     cart_controller.publish(msg)
     if num_cameras == 1:
         # 1 Camera
-        camera1_controller.publish(0)
+        camera1_controller.publish(camera_angle)
     elif num_cameras == 2:
         # 2 Cameras
         camera1_controller.publish(camera_angle)

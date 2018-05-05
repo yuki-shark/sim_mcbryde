@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Microsoft Kinect / ASUS Xtion PRO Live for simulation -->
+  <xacro:arg name="horizontal_fov" default="58.0"/>
   <xacro:macro name="xtion_gazebo" params="id">
     <gazebo reference="camera${id}_link">
       <sensor type="depth" name="camera${id}">
         <always_on>true</always_on>
         <update_rate>20.0</update_rate>
         <camera>
-          <horizontal_fov>${58.0*M_PI/180.0}</horizontal_fov>
+          <horizontal_fov>${$(arg horizontal_fov)*M_PI/180.0}</horizontal_fov>
           <image>
             <format>R8G8B8</format>
-            <width>640</width>
-            <height>480</height>
+            <width>${640*$(arg horizontal_fov)/58}</width>
+            <height>${480*$(arg horizontal_fov)/58}</height>
           </image>
           <clip>
             <near>0.20</near>
