@@ -123,12 +123,12 @@ def publishMsg():
         pos_out_of_path = abs(np.cross(dist_normalized, pos_error))
 
         if np.linalg.norm(distance) <= delta_pos:
+            publishMsg.target_pos = points[publishMsg.current_state + 1]
             if publishMsg.current_state == len(points) - 2:
                 publishMsg.kill_flag = True
             elif np.linalg.norm(pos_error) <= position_margin / 2:
                 publishMsg.current_state += 1
                 publishMsg.is_rotating = True
-                publishMsg.target_pos = points[publishMsg.current_state]
                 distance = points[publishMsg.current_state + 1] - publishMsg.target_pos
                 dist_normalized = distance / np.linalg.norm(distance)
                 goal_yaw = np.arctan2(*dist_normalized[::-1])
@@ -147,8 +147,8 @@ def publishMsg():
         yaw_error = tf.transformations.euler_from_quaternion([quat_error.x, quat_error.y, quat_error.z, quat_error.w])[2]
 
         if abs(diff_yaw) <= delta_yaw:
+            publishMsg.target_quat = publishMsg.goal_quat
             if abs(yaw_error) <= angular_margin / 2:
-                publishMsg.target_quat = publishMsg.goal_quat
                 publishMsg.is_rotating = False
                 pos_pid_controller.reset()
                 yaw_pid_controller.reset()
