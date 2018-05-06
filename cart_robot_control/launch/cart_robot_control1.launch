@@ -4,6 +4,8 @@
   <arg name="world_name" default="narrow"/>
   <arg name="gui" default="true"/>
   <arg name="horizontal_fov" default="58.0"/>
+  <arg name="add_shake" default="false"/>
+  <arg name="shake_angle" default="5.0"/>
   <!-- include cart_robot.launch -->
   <include file="$(find cart_robot_gazebo)/launch/cart_robot.launch">
     <arg name="camera_angle" value="$(arg camera_angle)"/>
@@ -28,5 +30,17 @@
         respawn="false" output="screen">
     <remap from="/joint_states" to="/cart_robot/joint_states" />
   </node>
+
+  <!-- Run a python script -->
+  <!-- <node pkg="cart_robot_control" name="move_loop_closure" type="move_loop_closure" output="screen"> -->
+  <!--   <param name="num_cameras" value="$(arg num_cameras)"/> -->
+  <!--   <param name="camera_angle" value="$(eval 3.1415926535 * arg('camera_angle')/180)"/> -->
+  <!--   <param name="corridor" value="$(arg world_name)"/> -->
+  <!-- </node> -->
+
+  <!-- <node pkg="cart_robot_control" name="add_shake" type="add_shake" output="screen"> -->
+  <!--   <param name="add_shake" value="$(arg add_shake)"/> -->
+  <!--   <param name="shake_angle" value="$(arg shake_angle)"/> -->
+  <!-- </node> -->
 
 </launch>

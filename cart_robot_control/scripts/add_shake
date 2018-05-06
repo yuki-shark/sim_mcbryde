@@ -6,11 +6,11 @@ import math
 
 joint_controller = rospy.Publisher('/cart_robot/joint1_position_controller/command', Float64, queue_size=10)
 add_shake = rospy.get_param("add_shake/add_shake")
+shake_angle = rospy.get_param("add_shake/shake_angle", default=5.0)
 
+max_angle = 0.0
 if add_shake:
-    max_angle = 5.0
-else:
-    max_angle = 0.0
+    max_angle = shake_angle
 
 def talker():
     global max_angle

@@ -1,162 +1,199 @@
 #!/usr/bin/env python
-# license removed for brevity
 import rospy
+import math
+import numpy as np
+import quaternion
+import copy
+import time
+import tf.transformations
 from std_msgs.msg import Float64
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose2D
 from std_srvs.srv import Empty
-import tf.transformations
-import math
-import os
-# import roslaunch
 
-cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-num_cameras = rospy.get_param("/move_loop_closure/num_cameras")
+DEBUG = False
+
+def static_var(varname, value):
+    def decorate(func):
+        setattr(func, varname, value)
+        return func
+    return decorate
+
+class velocityPID:
+    def __init__(self, _pgain, _igain, _dgain, _dt, _init = 0):
+        self.pgain = _pgain
+        self.igain = _igain
+        self.dgain = _dgain
+        self.dt = _dt
+        self.init_value = copy.deepcopy(_init)
+        self.error = [copy.deepcopy(_init), copy.deepcopy(_init), copy.deepcopy(_init)]
+        self.ret = copy.deepcopy(_init)
+
+    def reset(self):
+        self.error = [copy.deepcopy(self.init_value), copy.deepcopy(self.init_value), copy.deepcopy(self.init_value)]
+        self.ret = copy.deepcopy(self.init_value)
+
+    def update(self, _error):
+        self.error[1:] = self.error[:-1]
+        self.error[0] = _error
+        self.ret += self.pgain * (self.error[0] - self.error[1]) + \
+                    self.igain * self.dt * self.error[0] + \
+                    self.dgain / self.dt * (self.error[0] - 2 * self.error[1] + self.error[2])
+        return self.ret
+
+cart_controller = rospy.Publisher('/cmd_vel', Twist, queue_size=20)
+
+num_cameras = rospy.get_param("move_loop_closure/num_cameras")
 camera1_controller = rospy.Publisher('/cart_robot/camera1_joint_position_controller/command', Float64, queue_size=10)
 if num_cameras > 1:
     camera2_controller = rospy.Publisher('/cart_robot/camera2_joint_position_controller/command', Float64, queue_size=10)
     if num_cameras > 2:
         camera3_controller = rospy.Publisher('/cart_robot/camera3_joint_position_controller/command', Float64, queue_size=10)
 
-# Parameters
-linear_speed = 0.5
-angular_speed = -0.2
-
-#mcbryde1
-# point1 = Pose2D(-7.5, 8.5, math.pi/2)
-# point2 = Pose2D(6.0, 8.5, 0.0)
-# point3 = Pose2D(6.0, -7.2, -math.pi/2)
-# point4 = Pose2D(-7.5, -7.2, -math.pi)
-
-#mcbryde3
-# point1 = Pose2D(-7.3, 7.3, math.pi/2)
-# point2 = Pose2D(5.5, 7.3, 0.0)
-# point3 = Pose2D(5.5, -7.7, -math.pi/2)
-# point4 = Pose2D(-7.3, -7.7, -math.pi)
-
-corridor = rospy.get_param("/move_loop_closure/corridor")
+corridor = rospy.get_param("move_loop_closure/corridor")
 
 #mcbryde5
 if corridor=='narrow':
-    point1 = Pose2D(-6.0, 7.0, math.pi/2)
-    point2 = Pose2D(6.7, 7.0, 0.0)
-    point3 = Pose2D(6.7, -7.7, -math.pi/2)
-    point4 = Pose2D(-6.0, -7.7, -math.pi)
+    points = [np.array([-6.0, 0.0]), np.array([-6.0, 7.0]),
+              np.array([6.7, 7.0]), np.array([6.7, -7.7]),
+              np.array([-6.0, -7.7]), np.array([-6.0, 7.0])]
 elif corridor=='middle':
-    point1 = Pose2D(-5.3, 6.2, math.pi/2)
-    point2 = Pose2D(6.0, 6.2, 0.0)
-    point3 = Pose2D(6.0, -7.2, -math.pi/2)
-    point4 = Pose2D(-5.3, -7.2, -math.pi)
+    points = [np.array([-5.3, 5.0]), np.array([-5.3, 6.2]),
+              np.array([6.0, 6.2]), np.array([6.0, -7.2]),
+              np.array([-5.3, -7.2]), np.array([-5.3, 6.2])]
 else:
-    point1 = Pose2D(-5.0, 6.0, math.pi/2)
-    point2 = Pose2D(5.5, 6.0, 0.0)
-    point3 = Pose2D(5.5, -6.5, -math.pi/2)
-    point4 = Pose2D(-5.0, -6.5, -math.pi)
+    points = [np.array([-5.0, 4.5]), np.array([-5.0, 6.0]),
+              np.array([5.5, 6.0]), np.array([5.5, -6.5]),
+              np.array([-5.0, -6.5]), np.array([-5.0, 6.0])]
 
-position_margin = 0.2
-angular_margin = 0.03
-current_state = -1
+# ROS Parameters
+linear_speed = rospy.get_param("move_loop_closure/linear_speed", default=0.5)
+angular_speed = rospy.get_param("move_loop_closure/angular_speed", default=0.2)
+position_margin = rospy.get_param("move_loop_closure/position_margin", default=0.2)
+angular_margin = rospy.get_param("move_loop_closure/angular_margin", default=0.03)
+camera_angle = rospy.get_param("move_loop_closure/camera_angle")
+publish_rate = rospy.get_param("move_loop_closure/publish_rate", default=100)
 
-kill_flag = False
+dt = 1.0 / publish_rate
+delta_pos = linear_speed * dt
+delta_yaw = angular_speed * dt
 
-def callback(data):
+pos = None
+yaw = None
+quat = None
+pos_pid_controller = velocityPID(0.85, 0.02, 0.15, dt, np.array([0.0, 0.0]))
+yaw_pid_controller = velocityPID(0.85, 0.02, 0.15, dt, 0.0)
 
-    global msg
-    global camera_angle
-    global current_state
-    global kill_flag
+def getOdom(data):
+    global pos
+    global yaw
+    global quat
 
-    x = data.pose.pose.position.x
-    y = data.pose.pose.position.y
-    z = data.pose.pose.position.z
-    quaternion = (
-            data.pose.pose.orientation.x,
-            data.pose.pose.orientation.y,
-            data.pose.pose.orientation.z,
-            data.pose.pose.orientation.w)
-    euler = tf.transformations.euler_from_quaternion(quaternion)
-    roll = euler[0]
-    pitch = euler[1]
+    pos = np.array([data.pose.pose.position.x,
+                       data.pose.pose.position.y])
+    quat = np.quaternion(data.pose.pose.orientation.w,
+                         data.pose.pose.orientation.x,
+                         data.pose.pose.orientation.y,
+                         data.pose.pose.orientation.z)
+    euler = tf.transformations.euler_from_quaternion([quat.x, quat.y, quat.z, quat.w])
     yaw = euler[2]
 
-    # init Twist msg
-    msg.linear.x = 0.0
-    msg.linear.y = 0.0
-    msg.linear.z = 0.0
-    msg.angular.x = 0.0
-    msg.angular.y = 0.0
-    msg.angular.z = 0.0
+@static_var("target_pos", copy.deepcopy(points[0]))
+@static_var("target_yaw", 1.570796) # should be removed
+@static_var("target_quat", np.quaternion(0.70710678, 0, 0, 0.70710678))
+@static_var("goal_quat", np.quaternion(0.70710678, 0, 0, 0.70710678))
+@static_var("current_state", 0)
+@static_var("is_rotating", False)
+@static_var("kill_flag", False)
+def publishMsg():
+    global pos
+    global yaw
+    global quat
+    global pos_pid_controller
+    global yaw_pid_controller
 
-    if x > (point1.x - position_margin) and x < (point1.x + position_margin) and \
-       yaw > (point1.theta - angular_margin) and yaw < (point1.theta + angular_margin) and \
-       y <= point1.y:
-        msg.linear.x = linear_speed
-        # rospy.loginfo("state 0")
-        current_state = 0
-    elif x > (point1.x - position_margin) and x < (point1.x + position_margin) and \
-         y > (point1.y - position_margin) and y < (point1.y + position_margin) and \
-         yaw >= point2.theta:
-        msg.angular.z = angular_speed
-        # rospy.loginfo("state 1")
-        current_state = 1
-    elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
-         yaw > (point2.theta - angular_margin) and yaw < (point2.theta + angular_margin) and \
-         x <= point2.x:
-        msg.linear.x = linear_speed
-        # rospy.loginfo("state 2")
-        current_state = 2
-        if kill_flag:
-            rospy.wait_for_service('path_to_image_exporter')
-            path_to_image = rospy.ServiceProxy('path_to_image_exporter', Empty)
-            path_to_image()
-            # os.system('rosservice call /path_to_image_exporter')
-            rospy.wait_for_service('run_loop')
-            run_loop = rospy.ServiceProxy('run_loop', Empty)
-            run_loop()
-            # os.system('rosservice call /run_loop')
-    elif y > (point2.y - position_margin) and y < (point2.y + position_margin) and \
-         x > (point2.x - position_margin) and x < (point2.x + position_margin) and \
-         yaw >= point3.theta:
-        msg.angular.z = angular_speed
-        # rospy.loginfo("state 3")
-        current_state = 3
-    elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
-         yaw > (point3.theta - angular_margin) and yaw < (point3.theta + angular_margin) and \
-         y >= point3.y:
-        msg.linear.x = linear_speed
-        # rospy.loginfo("state 4")
-        current_state = 4
-    elif x > (point3.x - position_margin) and x < (point3.x + position_margin) and \
-         y > (point3.y - position_margin) and y < (point3.y + position_margin) and \
-         yaw >= (point4.theta + angular_margin):
-        msg.angular.z = angular_speed
-        # rospy.loginfo("state 5")
-        current_state = 5
-    elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
-         (yaw > -point4.theta - angular_margin  or yaw < point4.theta + angular_margin) and \
-         x >= point4.x:
-        msg.linear.x = linear_speed
-        # rospy.loginfo("state 6")
-        current_state = 6
-    elif y > (point4.y - position_margin) and y < (point4.y + position_margin) and \
-         x > (point4.x - position_margin) and x < (point4.x + position_margin) and \
-         (yaw < (point4.theta + angular_margin) or yaw > point1.theta):
-        msg.angular.z = angular_speed
-        # rospy.loginfo("state 7")
-        current_state = 7
-        kill_flag = True
+    pos_out_of_path = 0
+    rot_out_of_path = 0
+
+    if not publishMsg.is_rotating:
+        distance = points[publishMsg.current_state + 1] - publishMsg.target_pos
+        dist_normalized = distance / np.linalg.norm(distance)
+
+        pos_error = publishMsg.target_pos - pos
+        pos_out_of_path = abs(np.cross(dist_normalized, pos_error))
+
+        if np.linalg.norm(distance) <= delta_pos:
+            if publishMsg.current_state == len(points) - 2:
+                publishMsg.kill_flag = True
+            elif np.linalg.norm(pos_error) <= position_margin / 2:
+                publishMsg.current_state += 1
+                publishMsg.is_rotating = True
+                publishMsg.target_pos = points[publishMsg.current_state]
+                distance = points[publishMsg.current_state + 1] - publishMsg.target_pos
+                dist_normalized = distance / np.linalg.norm(distance)
+                goal_yaw = np.arctan2(*dist_normalized[::-1])
+                tf_quat = tf.transformations.quaternion_from_euler(0, 0, goal_yaw)
+                publishMsg.goal_quat = np.quaternion(tf_quat[3], tf_quat[0], tf_quat[1], tf_quat[2])
+                pos_pid_controller.reset()
+                yaw_pid_controller.reset()
+        else:
+            publishMsg.target_pos += delta_pos * dist_normalized
     else:
+        diff_quat = publishMsg.goal_quat * publishMsg.target_quat.inverse()
+        diff_yaw = tf.transformations.euler_from_quaternion([diff_quat.x, diff_quat.y, diff_quat.z, diff_quat.w])[2]
+
+        pos_out_of_path = np.linalg.norm(publishMsg.target_pos - pos)
+        quat_error = publishMsg.target_quat * quat.inverse()
+        yaw_error = tf.transformations.euler_from_quaternion([quat_error.x, quat_error.y, quat_error.z, quat_error.w])[2]
+
+        if abs(diff_yaw) <= delta_yaw:
+            if abs(yaw_error) <= angular_margin / 2:
+                publishMsg.target_quat = publishMsg.goal_quat
+                publishMsg.is_rotating = False
+                pos_pid_controller.reset()
+                yaw_pid_controller.reset()
+        else:
+            publishMsg.target_yaw += delta_yaw * np.sign(diff_yaw)
+            tf_target_quat = tf.transformations.quaternion_from_euler(0, 0, publishMsg.target_yaw)
+            publishMsg.target_quat = np.quaternion(tf_target_quat[3], tf_target_quat[0], tf_target_quat[1], tf_target_quat[2])
+
+    error_quat = publishMsg.target_quat * quat.inverse()
+    error_yaw = tf.transformations.euler_from_quaternion([error_quat.x, error_quat.y, error_quat.z, error_quat.w])[2]
+
+    # Detect error
+    if not publishMsg.is_rotating:
+        rot_out_of_path = error_yaw
+    if position_margin < pos_out_of_path or angular_margin < rot_out_of_path:
         rospy.logwarn("Cart robot is out of the path!")
+        if DEBUG:
+            print("pos_error: " + str(pos_out_of_path))
+            print("rot_error: " + str(rot_out_of_path))
+        publishMsg.kill_flag = True
+
+    if publishMsg.kill_flag:
+        rospy.logwarn("Call path_to_image_exporter")
         rospy.wait_for_service('path_to_image_exporter')
         path_to_image = rospy.ServiceProxy('path_to_image_exporter', Empty)
         path_to_image()
-        # # os.system('rosservice call /path_to_image_exporter')
         rospy.wait_for_service('run_loop')
         run_loop = rospy.ServiceProxy('run_loop', Empty)
         run_loop()
-        # os.system('rosservice call /run_loop')
+        msg = Twist()
+        cart_controller.publish(msg)
+
+    cmd_pos_vel = pos_pid_controller.update(publishMsg.target_pos - pos)
+    cmd_yaw_vel = yaw_pid_controller.update(error_yaw)
+
+    # Transform from global frame to local frame
+    rotation_mat = np.array([[np.cos(yaw), -np.sin(yaw)], [np.sin(yaw), np.cos(yaw)]])
+    cmd_pos_vel = np.dot(cmd_pos_vel, rotation_mat)
+
+    msg = Twist()
+    msg.linear.x = cmd_pos_vel[0]
+    msg.linear.y = cmd_pos_vel[1]
+    msg.angular.z = cmd_yaw_vel
     cart_controller.publish(msg)
+
     if num_cameras == 1:
         # 1 Camera
         camera1_controller.publish(camera_angle)
@@ -169,43 +206,25 @@ def callback(data):
         camera1_controller.publish(camera_angle)
         camera2_controller.publish(0)
         camera3_controller.publish(-1 * camera_angle)
-    # rospy.loginfo("%s", kill_flag)
-    # joint_controller.publish(0)
-    # rospy.loginfo("x:%s y:%s yaw:%s", x, y, yaw)
 
-def stop_command():
-    global msg
+def stopCommand():
     msg = Twist()
-    msg.linear.x = 0.0
-    msg.linear.y = 0.0
-    msg.linear.z = 0.0
-    msg.angular.x = 0.0
-    msg.angular.y = 0.0
-    msg.angular.z = 0.0
     cart_controller.publish(msg)
-    # joint_controller.publish(0)
     rospy.loginfo("running finished")
-
-def auto_move_publisher():
-    global msg
-    global camera_angle
-    msg = Twist()
-    camera_angle = rospy.get_param("/move_loop_closure/camera_angle")
-    rospy.loginfo("Cart robot started moving")
-    rospy.init_node('auto_move_publisher', anonymous=True)
-    # # 2 Cameras
-    # camera1_controller.publish(-1 * camera_angle)
-    # camera2_controller.publish(camera_angle)
-    # # 3 Cameras
-    # camera1_controller.publish(camera_angle)
-    # camera2_controller.publish(0)
-    # camera3_controller.publish(-1 * camera_angle)
-    rospy.Subscriber("/odom", Odometry, callback)
-    rospy.on_shutdown(stop_command)
-    rospy.spin()
 
 if __name__ == '__main__':
     try:
-        auto_move_publisher()
+        global pos
+        rospy.loginfo("Cart robot started moving")
+        rospy.init_node('move_loop_closure', anonymous=True)
+        rospy.Subscriber("/odom", Odometry, getOdom)
+        rospy.on_shutdown(stopCommand)
+        rate = rospy.Rate(publish_rate)
+        while pos is None:
+            pass
+        time.sleep(4)
+        while not rospy.is_shutdown():
+            publishMsg()
+            rate.sleep()
     except rospy.ROSInterruptException:
         pass
